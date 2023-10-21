@@ -9,10 +9,11 @@
 
         @font-face {
             font-family: Roboto-Bold;
-            src: url('{{asset('/public/fonts/Roboto-Bold.ttf')}}');
+            src: url('/fonts/Roboto-Bold.ttf');
         }
 
         button {
+            font-family: Roboto-Bold;
 			color: #ffffff;
 			background-color: #2d63c8;
 			font-size: 14px;
@@ -36,6 +37,8 @@
         .center{
             margin: auto;
             text-align: center;
+            min-width:343px;
+            width: 30%;
         }
 
         img {
@@ -44,47 +47,50 @@
             object-fit: contain;
         }
 
+        p{
+            font-size: 18px;
+            line-height: 0px
+        }
+
     </style>
-    <body>
+    <body style="font-family: Roboto-Bold;">
            
         <div class="center">
         @auth
-            @foreach ($posts as $post)
-                @if (auth()->user()->id == $post['user_id'])
-                    <p>You are logged in as <span style="color:CornflowerBlue;"><u>{{$post->user->name}}</u></span>.</p>
-                    @break
-                @endif
-            @endforeach
+            <p>You are logged in as <span style="color:CornflowerBlue;"><u>{{ auth()->user()->name }}</u></span>.</p>
             <form action="/logout" method="post">
                 @csrf
                 <button style="margin-bottom:2%;">Log out</button>
             </form>
 
-            <div style="border: 3px solid black;">
+            <div style="border: 3px double black;">
                 <h2>Write a new post</h2>
                 <form action="/create-post" method="post" enctype="multipart/form-data">
                     @csrf
                     <input style="margin-bottom:1%;" type="text" name="title" placeholder="Post title" maxlength="255"></br>
                     <textarea name="body" placeholder="Post content..." cols="40" rows="8" maxlength="255"></textarea></br>
+                    <label for="image">Image: </label>
                     <input type="file" name="image"></br>
                     <button style="margin:1%;">Save post</button>
                 </form>
             </div>
 
-            <div style="border: 3px solid black">
+            <div style="border: 3px double black; ">
                 <h2>All posts</h2>
                 @foreach ($posts as $post)
-                    <div class="box" style="background-color:Thistle; padding:10px; margin:10px;">
-                        <h3>{{ $post['title'] }} <span style="color: grey">(by: {{$post->user->name}})</span></h3>
+                    <div class="box" style="background-color:Thistle; padding:10px; margin:10px; border: 3px double black; overflow:hidden; zoom:1; ">
+                        <h2>{{ $post['title'] }} <span style="color: grey">(by: {{$post->user->name}})</span></h2>
                         <p>{{ $post['body'] }}</p>
-                        <img src="{{ asset('uploads/users/'.$post->image) }}" size="10%" alt="">
+                        @if($post->image !== null)
+                            <img src="{{ asset('uploads/users/'.$post->image) }}" alt="">
+                        @endif
                         <!--<p style="color:SlateBlue;">Created at: {{ $post['created_at'] }}</p>-->
                         @if (auth()->user()->id == $post['user_id'])
-                            <p><a href="/edit-post/{{$post->id}}">Edit</a></p>
+                            <p style="text-align: right;"><a href="/edit-post/{{$post->id}}">Edit</a></p>
                             <form action="/delete-post/{{$post->id}}" method="post">
                                 @csrf
                                 @method('DELETE')
-                                <button>Delete</button>
+                                <button style="background-color:rgb(219, 70, 70); float: right;">Delete</button>
                             </form>
                         @endif
                     </div>
@@ -93,8 +99,9 @@
             </div>
         </div>
         @else
-        <div class="center">
-            <div style="border: 3px solid black;">
+        <h1 class="center">Noass Posts</h1>
+        <div class="center" style="margin-top: 40%">
+            <div style="border: 3px double black;">
                 <h2 style="margin: 1%">Register</h2>
                 <form action="/register" method="post">
                     @csrf
@@ -104,7 +111,7 @@
                     <button style="margin: 1%">Register</button>
                 </form>
             </div>
-            <div style="border: 3px solid black;">
+            <div style="border: 3px double black;">
                 <h2 style="margin: 1%">Log in</h2>
                 <form action="/login" method="post">
                     @csrf

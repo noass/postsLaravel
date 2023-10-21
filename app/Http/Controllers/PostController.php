@@ -23,7 +23,11 @@ class PostController extends Controller
         $incomingFields = $request->validate([
             'title' => 'required',
             'body' => 'required',
-            'image' => 'nullable'
+            'image' => 'nullable | mimes:jpg,jpeg,png,bmp,tiff | max:4096'
+        ],
+        $messages = [
+            'required' => 'The field is required.',
+            'mimes' => 'Only JPG, JPEG, PNG, BMP and TIFF file formats are allowed.'
         ]);
 
         $incomingFields['title'] = strip_tags($incomingFields['title']);
@@ -52,7 +56,11 @@ class PostController extends Controller
         $incomingFields = $request->validate([
             'title' => 'required',
             'body' => 'required',
-            'image' => 'nullable'
+            'image' => 'nullable | mimes:jpg,jpeg,png,bmp,tiff | max:4096'
+        ],
+        $messages = [
+            'required' => 'The field is required.',
+            'mimes' => 'Only JPG, JPEG, PNG, BMP and TIFF file formats are allowed.'
         ]);
 
         $incomingFields['title'] = strip_tags($incomingFields['title']);
@@ -66,6 +74,6 @@ class PostController extends Controller
         }
         $incomingFields['user_id'] = auth()->id();
         Post::create($incomingFields);
-        return redirect('/');
+        return redirect('/')->with('success','Post created!');
     }
 }

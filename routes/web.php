@@ -20,7 +20,7 @@ Route::get('/', function () {
     $posts = [];
     if(auth()->check()){
         //$posts = auth()->user()->usersPosts()->latest()->get();
-        $posts = Post::all();
+        $posts = Post::latest()->get();
     }
     
     return view('welcome', ['posts' => $posts]);
